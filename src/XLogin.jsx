@@ -1,60 +1,66 @@
-
-
 import { useState } from "react";
 
-export default function XLogin() {
+export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState({ username: "", password: "" });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let newError = { username: "", password: "" };
-    
-    if (!username) newError.username = "Please fill out this field";
-    if (!password) newError.password = "Please fill out this field";
-    
-    setError(newError);
-    if (newError.username || newError.password) return;
-
+    if (!username || !password) {
+      setError("Please fill out both fields.");
+      return;
+    }
     if (username === "user" && password === "password") {
-      setMessage("Welcome, user!");
+      setIsLoggedIn(true);
     } else {
-      setMessage("Invalid username or password");
+      setError("Invalid username or password");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Login Page</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <div className="mb-4">
-          <label className="block text-gray-700">Username</label>
-          <input
-            type="text"
-            className="w-full p-2 border rounded mt-1"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          {error.username && <p className="text-red-500 text-sm">{error.username}</p>}
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      {isLoggedIn ? (
+        <div>
+        <h1 className="text-xl font-bold mb-4">Login Page</h1>
+        <h3 className="text-2xl font-bold">Welcome, user!</h3>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="p-5 border rounded-lg shadow-md">
+          <h1 className="text-xl font-bold mb-4">Login Page</h1>
 
-        <div className="mb-4">
-          <label className="block text-gray-700">Password</label>
-          <input
-            type="password"
-            className="w-full p-2 border rounded mt-1"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {error.password && <p className="text-red-500 text-sm">{error.password}</p>}
-        </div>
+          <div className="mb-3">
+            <label className="block font-semibold">Username</label>
+            <input
+              type="text"
+              value={username}
+              placeholder="Username"
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="border p-2 rounded w-full"
+            />
+          </div>
 
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">Submit</button>
-      </form>
-      {message && <p className="mt-4 text-lg font-semibold">{message}</p>}
+          <div className="mb-3">
+            <label className="block font-semibold">Password</label>
+            <input
+              type="password"
+              value={password}
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="border p-2 rounded w-full"
+            />
+          </div>
+
+          {error && <p className="text-red-500">{error}</p>}
+
+          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-3">
+            Submit
+          </button>
+        </form>
+      )}
     </div>
   );
 }
-
